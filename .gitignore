@@ -1,0 +1,14 @@
+.env
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+workspace/input/*
+workspace/runs/*
+!workspace/input/.gitkeep
+!workspace/runs/.gitkeep
+
+modules/*/input/*
+modules/*/output/*
+!modules/*/input/.gitkeep
+!modules/*/output/.gitkeep

@@ -1,0 +1,54 @@
+rules:
+  - id: R001
+    category: payment_risk
+    description: 付款条款风险
+    cuad_category: Cap On Liability
+    keywords: ["付款", "payment", "remittance", "invoice", "金额", "fee"]
+    risk_level: high
+    require_citation: true
+    human_review_threshold: null
+
+  - id: R002
+    category: termination_risk
+    description: 终止条款风险
+    cuad_category: Termination For Convenience
+    keywords: ["终止", "terminate", "termination", "解除"]
+    risk_level: high
+    require_citation: true
+    human_review_threshold: null
+
+  - id: R003
+    category: liability_cap
+    description: 责任上限条款
+    cuad_category: Cap On Liability
+    keywords: ["责任上限", "liability cap", "不超过", "最高赔偿", "cap on liability"]
+    risk_level: high
+    require_citation: true
+    human_review_threshold: 1000000
+
+  - id: R004
+    category: non_compete
+    description: 竞业限制条款
+    cuad_category: Non-Compete
+    keywords: ["竞业", "non-compete", "non compete", "竞争限制"]
+    risk_level: high
+    require_citation: true
+    human_review_threshold: null
+
+  - id: R005
+    category: anti_assignment
+    description: 转让限制条款
+    cuad_category: Anti-Assignment
+    keywords: ["转让", "assign", "assignment", "不得转让"]
+    risk_level: high
+    require_citation: true
+    human_review_threshold: null
+
+coverage_declaration:
+  covered_categories:
+    - payment_risk
+    - termination_risk
+    - liability_cap
+    - non_compete
+    - anti_assignment
+  not_covered_note: "数据主权、AI使用条款等新型合规类别当前未覆盖"
