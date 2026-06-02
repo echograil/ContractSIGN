@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ContractSIGN v0.2 本地 UI 预览</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101315;
+      --panel: #171d20;
+      --panel-2: #20272a;
+      --line: #324047;
+      --text: #eef3f1;
+      --muted: #9aa8a5;
+      --green: #55d889;
+      --amber: #f2bd5c;
+      --cyan: #65d8ff;
+      --red: #ff716d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), transparent 180px),
+        radial-gradient(circle at 20% 0%, rgba(101,216,255,.12), transparent 28rem),
+        var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(16, 19, 21, .86);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(14px);
+    }
+
+    h1 { font-size: 22px; margin: 0; }
+
+    a {
+      color: var(--cyan);
+      text-decoration: none;
+    }
+
+    .status-pill {
+      border: 1px solid var(--line);
+      color: var(--muted);
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      background: var(--panel);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+      gap: 24px;
+      padding: 24px;
+      max-width: 1480px;
+      margin: 0 auto;
+    }
+
+    section {
+      border: 1px solid var(--line);
+      background: rgba(23, 29, 32, .9);
+      border-radius: 8px;
+    }
+
+    .control-panel {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-self: start;
+    }
+
+    .label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .dropzone {
+      border: 1px dashed #53626a;
+      background: #121719;
+      border-radius: 8px;
+      padding: 18px;
+      min-height: 124px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .dropzone strong { display: block; margin-bottom: 8px; }
+    .dropzone span { color: var(--muted); font-size: 13px; }
+
+    textarea {
+      width: 100%;
+      min-height: 128px;
+      resize: none;
+      color: var(--text);
+      background: #111719;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px;
+      font: inherit;
+      line-height: 1.5;
+    }
+
+    .switches { display: grid; gap: 8px; }
+
+    .switch {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 9px 10px;
+      background: #121719;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .button {
+      border: 0;
+      border-radius: 6px;
+      background: var(--green);
+      color: #07100b;
+      font-weight: 700;
+      padding: 12px 14px;
+      text-align: center;
+    }
+
+    .notice {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .factory {
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .belt {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(110px, 1fr));
+      gap: 12px;
+      padding: 22px 0 34px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .belt::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      bottom: 12px;
+      height: 16px;
+      border: 1px solid #49565d;
+      background: repeating-linear-gradient(90deg, #334047 0 18px, #20282c 18px 36px);
+      animation: moveBelt 900ms linear infinite;
+      opacity: .9;
+    }
+
+    @keyframes moveBelt {
+      from { background-position: 0 0; }
+      to { background-position: 36px 0; }
+    }
+
+    .machine {
+      min-height: 132px;
+      border: 1px solid #425058;
+      background: linear-gradient(180deg, #222b2f, #151b1e);
+      border-radius: 8px;
+      padding: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .machine::after {
+      content: "";
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      right: 10px;
+      top: 10px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 16px var(--green);
+    }
+
+    .machine .num {
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .machine h2 {
+      margin: 8px 0 10px;
+      font-size: 15px;
+      line-height: 1.25;
+    }
+
+    .machine p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .payload {
+      position: absolute;
+      left: 10px;
+      bottom: 11px;
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      background: var(--cyan);
+      box-shadow: 0 0 18px rgba(101,216,255,.8);
+      animation: payloadMove 8s linear infinite;
+    }
+
+    @keyframes payloadMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(calc(100vw - 180px)); }
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr);
+      gap: 18px;
+      padding-top: 18px;
+    }
+
+    .answer, .artifacts {
+      min-height: 280px;
+      background: #111719;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .answer h2, .artifacts h2 {
+      margin: 0 0 12px;
+      font-size: 16px;
+    }
+
+    .tool-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tool-row span {
+      background: #263137;
+      border: 1px solid var(--line);
+      color: var(--text);
+      padding: 8px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 0;
+      color: #e8eeec;
+      line-height: 1.55;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+    }
+
+    .artifact-list {
+      display: grid;
+      gap: 10px;
+      max-height: 450px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .artifact {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px;
+      background: var(--panel-2);
+    }
+
+    .artifact strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .artifact code {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .banner {
+      max-width: 1480px;
+      margin: 18px auto 0;
+      padding: 0 24px;
+    }
+
+    .banner div {
+      border: 1px solid rgba(242, 189, 92, .45);
+      background: rgba(242, 189, 92, .09);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #f5d89b;
+      font-size: 14px;
+    }
+
+    @media (max-width: 980px) {
+      main, .result-grid { grid-template-columns: 1fr; }
+      .belt { grid-template-columns: repeat(2, minmax(130px, 1fr)); }
+      header { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ContractSIGN v0.2 本地 UI 预览</h1>
+    <div class="status-pill">Static preview · GitHub Pages</div>
+  </header>
+
+  <div class="banner">
+    <div>这是 GitHub Pages 上的静态预览，不会真实上传或处理 PDF。完整功能需要 clone 仓库后本地运行 <code>python scripts/web_server.py</code>。</div>
+  </div>
+
+  <main>
+    <section class="control-panel">
+      <div>
+        <label class="label">PDF 合同</label>
+        <div class="dropzone">
+          <span>
+            <strong>INNOVIVA_COLLABORATION_AGREEMENT.PDF</strong>
+            本地处理时，文件进入模块一 input 文件夹
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <label class="label" for="question">问题</label>
+        <textarea id="question" readonly>这份合同的违约和保密日期是什么</textarea>
+      </div>
+
+      <div class="switches">
+        <label class="switch">API 路由 <input type="checkbox" checked disabled></label>
+        <label class="switch">API Embeddings <input type="checkbox" checked disabled></label>
+        <label class="switch">API 生成回答 <input type="checkbox" checked disabled></label>
+      </div>
+
+      <div class="button">运行六模块流水线</div>
+      <div class="notice">
+        默认可离线运行；启用 API 功能时复制 <code>.env.example</code> 为 <code>.env</code>，填入自己的 <code>OPENAI_API_KEY</code>。
+      </div>
+    </section>
+
+    <section class="factory">
+      <div class="belt">
+        <div class="payload"></div>
+        <article class="machine"><span class="num">01</span><h2>Document Ingestion</h2><p>PDF -> chunks.json</p></article>
+        <article class="machine"><span class="num">02</span><h2>Retrieval</h2><p>question + chunks -> top passages</p></article>
+        <article class="machine"><span class="num">03</span><h2>Question Router</h2><p>route / model tier</p></article>
+        <article class="machine"><span class="num">04</span><h2>Answer Generator</h2><p>grounded answer + citations</p></article>
+        <article class="machine"><span class="num">05</span><h2>Risk & Evidence</h2><p>review hints + final answer</p></article>
+        <article class="machine"><span class="num">06</span><h2>Observability</h2><p>trace + eval dataset</p></article>
+      </div>
+
+      <div class="result-grid">
+        <div class="answer">
+          <h2>回答</h2>
+          <div class="tool-row">
+            <span>复制回答</span>
+            <span>复制运行摘要</span>
+            <span>下载报告 JSON</span>
+          </div>
+          <pre>【高风险提示】此回答命中高风险规则，流程继续，但请结合依据复核。
+
+本次检索到的内容里：保密义务/保密条款的存续期为“自本协议到期或终止后十（10）年”。此外，关于“保密日期”，文中还提到双方在 Effective Date 后的六十（60）天内就公开披露流程达成一致，但未检索到明确的具体生效日期或单独的“保密日期”定义。
+
+至于“违约日期”，当前检索内容未提供与违约相关的具体日期或违约触发日期。</pre>
+        </div>
+
+        <div class="artifacts">
+          <h2>模块产物</h2>
+          <div class="artifact-list">
+            <div class="artifact"><strong>01 Document Ingestion · 1686 ms</strong><code>chunks.json
+manifest.json</code></div>
+            <div class="artifact"><strong>02 Retrieval · 7526 ms</strong><code>retrieval_results.json
+result_count=5</code></div>
+            <div class="artifact"><strong>03 Question Router · 2610 ms</strong><code>router_output.json
+route=qa</code></div>
+            <div class="artifact"><strong>04 Answer Generator · 9098 ms</strong><code>generator_output.json
+answerable=true
+citations=2</code></div>
+            <div class="artifact"><strong>05 Risk & Evidence · 31 ms</strong><code>risk_checker_output.json
+risk_level=high</code></div>
+            <div class="artifact"><strong>06 Observability Export · 5 ms</strong><code>eval_dataset.json
+metrics.json
+observability.sqlite3</code></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
